@@ -33,5 +33,6 @@ namespace BulkyBook.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        //Just a comment
     }
 }
