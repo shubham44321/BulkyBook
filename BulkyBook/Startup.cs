@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BulkyBook.DataAccess.Data;
+using BulkyBook.DataAccess.Repository.IRepository;
+using BulkyBook.DataAccess.Repository;
 
 namespace BulkyBook
 {
@@ -32,6 +34,7 @@ namespace BulkyBook
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>()//(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddScoped<IUnitOfWork,UnitOfWork>();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
         }
