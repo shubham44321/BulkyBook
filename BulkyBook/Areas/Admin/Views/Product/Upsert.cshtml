@@ -1,14 +1,17 @@
 ﻿@model BulkyBook.Models.ViewModels.ProductVM
+
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     var title = "Create Product";
 }
+
 
 <form method="post" enctype="multipart/form-data">
     <div class="row p-3 border">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         @if (Model.Product.Id != 0)
         {
+            //edit
             title = "Edit Product";
             <input type="hidden" asp-for="Product.Id" />
         }
@@ -48,7 +51,7 @@
                     <label asp-for="Product.Description"></label>
                 </div>
                 <div class="col-8">
-                    <textarea asp-for="Product.Description" class="form-control"></textarea>                    
+                    <textarea asp-for="Product.Description" class="form-control"></textarea>
                 </div>
             </div>
             <div class="form-group row">
@@ -92,7 +95,8 @@
                     Category
                 </div>
                 <div class="col-8">
-                    @Html.DropDownListFor(m => m.Product.CategoryId, Model.CategoryList, "-Select a Category", new { @class = "form-control" })
+                    @Html.DropDownListFor(m => m.Product.CategoryId, Model.CategoryList, "-Select a Category",
+                   new { @class = "form-control" })
                     <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
                 </div>
             </div>
@@ -101,7 +105,8 @@
                     Cover Type
                 </div>
                 <div class="col-8">
-                    @Html.DropDownListFor(m => m.Product.CoverTypeId, Model.CoverTypeList, "-Select a Cover Type", new { @class = "form-control" })
+                    @Html.DropDownListFor(m => m.Product.CoverTypeId, Model.CoverTypeList, "-Select a Cover Type",
+                   new { @class = "form-control" })
                     <span asp-validation-for="Product.CoverTypeId" class="text-danger"></span>
                 </div>
             </div>
@@ -110,14 +115,14 @@
                     Image
                 </div>
                 <div class="col-8">
-                    <input type="file" name="files" id="UploadBox" multiple class="form-control" />
+                    <input type="file" name="files" id="uploadBox" multiple class="form-control" />
                 </div>
             </div>
             <div class="form-group row">
                 <div class="col-8 offset-4">
                     @if (Model.Product.Id != 0)
                     {
-                        <partial name="_EditAndBackToListButton"/>
+                        <partial name="_EditAndBackToListButton" model="Model.Product.Id" />
                     }
                     else
                     {
@@ -133,31 +138,32 @@
                 </div>
             </div>
         </div>
-        @if(Model.Product.Id != 0)
+        @if (Model.Product.Id != 0)
         {
             <div class="col-3 offset-1 pt-4">
-                <img src="@Model.Product.ImageUrl" width="100%" style="border-radius:5px;border:1px solid #bbb9b9" />
+                <img src="@Model.Product.ImageUrl" width="100%" style="border-radius:5px; border:1px solid #bbb9b9" />
             </div>
         }
     </div>
 </form>
-@section Scripts
-{
-    <partial name="_ValidationScriptsPartial" />
+
+@section Scripts{
+    @*<partial name="_ValidationScriptsPartial" />*@
     <script src="https://cdn.tiny.cloud/1/n94ifuzvl80pchikopiwgz2esrw8n28dwcywvpejlqrregfp/tinymce/5/tinymce.min.js"></script>
 
     <script>
-    tinymce.init({
-        selector: 'textarea',
-        plugins: 'lists',
-        menubar: 'file edit format'
-    });
-    function validateInput() {
-        if (document.getElementById("UploadBox").value == "") {
-            swal("Error", "Please select an image", "error");
-            return false;
-        }
-        return true;
-    };
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'lists',
+            menubar: 'file edit format'
+        });
+        function validateInput() {
+            if (document.getElementById("uploadBox").value == "") {
+                swal("Error", "Please select an image", "error");
+                return false;
+            }
+            return true;
+        };
     </script>
+
 }
