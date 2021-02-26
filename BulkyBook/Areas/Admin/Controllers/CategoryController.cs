@@ -1,5 +1,6 @@
 ﻿using BulkyBook.DataAccess.Repository.IRepository;
 using BulkyBook.Models;
+using BulkyBook.Models.ViewModels;
 using BulkyBook.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,9 +20,27 @@ namespace BulkyBook.Areas.Admin.Controllers
         {
             _unitOfWork = unitOfWork;
         }
-        public IActionResult Index()
+        public IActionResult Index(int productPage = 1)
         {
-            return View();
+            int PageSize = 2;
+            CategoryVM categoryVM = new CategoryVM()
+            {
+                Categories = _unitOfWork.Category.GetAll()
+            };
+
+            var count = categoryVM.Categories.Count();
+            categoryVM.Categories = categoryVM.Categories.OrderBy(p => p.Name)
+                .Skip((productPage - 1) * PageSize).Take(2).ToList();
+
+            categoryVM.PagingInfo = new PagingInfo
+            {
+                CurrentPage = productPage,
+                ItemsPerPage = PageSize,
+                TotalItem = count,
+                urlParam = "/Admin/Category/Index?productPage=:"
+            };
+
+            return View(categoryVM);
         }
 
         public IActionResult Upsert(int? id)
@@ -76,12 +95,14 @@ namespace BulkyBook.Areas.Admin.Controllers
             var objFromDb = _unitOfWork.Category.Get(id);
             if(objFromDb == null)
             {
+                TempData["Error"] = "Error deleting Category";
                 return Json(new { success = false, message = "Error while deleting" });
             }
             else
             {
                 _unitOfWork.Category.Remove(objFromDb);
                 _unitOfWork.Save();
+                TempData["Success"] = "Category Successfully deleted";
                 return Json(new { success = true, message = "Delete Successful" });
             }
         }
